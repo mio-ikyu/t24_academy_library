@@ -20,7 +20,8 @@ import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.values.RentalStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import jp.co.metateam.library.model.Account;
+import jp.co.metateam.library.model.Stock;
 
 /**
  * 貸出管理関連クラスß
@@ -64,15 +65,18 @@ public class RentalManageController {
     }
 
     @GetMapping("/rental/add")
-    public String add(Model model,@ModelAttribute RentalManageDto rentalManageDto) {
-        List <BookMst> bookMstList = this.bookMstService.findAll(); //所有している書籍の情報を呼び出している
-        model.addAttribute("bookMstList", bookMstList);
-        model.addAttribute("RentalStatus", RentalStatus.values());
+    public String add(Model model, @ModelAttribute RentalManageDto rentalManageDto){
+        List<RentalManage> rentalManageList = this.rentalManageService.findAll();
+        List<Account> accounts = this.accountService.findAll();
+        List<Stock> stockList = this.stockService.findAll();
 
-        if (!model.containsAttribute("rentalManageDto")) {
+        model.addAttribute("accounts", accounts);
+        model.addAttribute("stockList", stockList);
+        model.addAttribute("rentalStatus", RentalStatus.values());
+
+        if(!model.containsAttribute ("rentalManageDto")) {
             model.addAttribute("rentalManageDto", new RentalManageDto());
         }
-
         return "rental/add";
     }
 
