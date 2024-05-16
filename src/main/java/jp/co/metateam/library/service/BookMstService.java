@@ -23,9 +23,9 @@ public class BookMstService {
 
     private final BookMstRepository bookMstRepository;
     private final StockRepository stockRepository;
-    
+
     @Autowired
-    public BookMstService(BookMstRepository bookMstRepository, StockRepository stockRepository){
+    public BookMstService(BookMstRepository bookMstRepository, StockRepository stockRepository) {
         this.bookMstRepository = bookMstRepository;
         this.stockRepository = stockRepository;
     }
@@ -37,7 +37,7 @@ public class BookMstService {
     public Optional<BookMst> findById(Long id) {
         return this.bookMstRepository.findById(id);
     }
-    
+
     public List<BookMstDto> findAvailableWithStockCount() {
         List<BookMst> books = this.bookMstRepository.findAll();
         List<BookMstDto> bookMstDtoList = new ArrayList<BookMstDto>();
@@ -46,7 +46,8 @@ public class BookMstService {
         // FIXME: 現状は書籍ID毎にDBに問い合わせている。一度のSQLで完了させたい。
         for (int i = 0; i < books.size(); i++) {
             BookMst book = books.get(i);
-            List<Stock> stockCount = this.stockRepository.findByBookMstIdAndStatus(book.getId(), Constants.STOCK_AVAILABLE);
+            List<Stock> stockCount = this.stockRepository.findByBookMstIdAndStatus(book.getId(),
+                    Constants.STOCK_AVAILABLE);
             BookMstDto bookMstDto = new BookMstDto();
             bookMstDto.setId(book.getId());
             bookMstDto.setIsbn(book.getIsbn());
@@ -57,7 +58,7 @@ public class BookMstService {
 
         return bookMstDtoList;
     }
-    
+
     @Transactional
     public void save(BookMstDto bookMstDto) {
         try {
@@ -72,7 +73,7 @@ public class BookMstService {
             throw e;
         }
     }
-    
+
     @Transactional
     public void update(Long id, BookMstDto bookMstDto) throws Exception {
         try {
@@ -109,21 +110,18 @@ public class BookMstService {
     }
 
     // public boolean isValidTitle(String title, RedirectAttributes ra) {
-    //     if (StringUtils.isEmpty(title)) {
-    //         ra.addFlashAttribute("errTitle", "書籍タイトルは必須");
-    //         return true;
-    //     }
-    //     return false;
+    // if (StringUtils.isEmpty(title)) {
+    // ra.addFlashAttribute("errTitle", "書籍タイトルは必須");
+    // return true;
+    // }
+    // return false;
     // }
 
     // public boolean isValidIsbn(String isbn, RedirectAttributes ra) {
-    //     if (StringUtils.isEmpty(isbn) || isbn.length() != 13) {
-    //         ra.addFlashAttribute("errISBN", "ISBNは13文字で入力してください");
-    //         return true;
-    //     }
-    //     return false;
+    // if (StringUtils.isEmpty(isbn) || isbn.length() != 13) {
+    // ra.addFlashAttribute("errISBN", "ISBNは13文字で入力してください");
+    // return true;
+    // }
+    // return false;
     // }
 }
-
-
-
