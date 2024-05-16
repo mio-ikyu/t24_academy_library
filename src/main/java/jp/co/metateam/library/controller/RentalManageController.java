@@ -64,7 +64,7 @@ public class RentalManageController {
     public String index(Model model) {
         // 貸出管理テーブルから全件取得
             List<RentalManage> rentalManageList = this.rentalManageService.findAll();
-            
+
         // 貸出一覧画面に渡すデータをmodelに追加    
             model.addAttribute("rentalManageList", rentalManageList);
  
@@ -185,16 +185,18 @@ public class RentalManageController {
             Long rentalSum = this.rentalManageService.countByStockIdAndStatusIn(stockid, Long.parseLong(id));
 
             //上の内容をif文に通す
-            if(!(rentalSum == 0 )){
-             Date expectedRentalOn = rentalManageDto.getExpectedRentalOn();
-             Date expectedReturnOn = rentalManageDto.getExpectedReturnOn();
-             Long rentalNum = this.rentalManageService.countByStockIdAndStatusAndDateIn(stockid, Long.parseLong(id), expectedRentalOn, expectedReturnOn); 
-            
-             if(!(rentalSum == rentalNum)){
-                String rentalError = "貸出できません。";
-                result.addError(new FieldError("rentalmanageDto", "expectedRentalOn", rentalError));
-                result.addError(new FieldError("rentalmanageDto", "expectedReturnOn", rentalError));
-             }
+            if(rentalManageDto.getStatus()== 0 || rentalManageDto.getStatus() == 1) {
+                if(!(rentalSum == 0 )){
+                    Date expectedRentalOn = rentalManageDto.getExpectedRentalOn();
+                    Date expectedReturnOn = rentalManageDto.getExpectedReturnOn();
+                    Long rentalNum = this.rentalManageService.countByStockIdAndStatusAndDateIn(stockid, Long.parseLong(id), expectedRentalOn, expectedReturnOn); 
+                   
+                    if(!(rentalSum == rentalNum)){
+                       String rentalError = "貸出できません。";
+                       result.addError(new FieldError("rentalmanageDto", "expectedRentalOn", rentalError));
+                       result.addError(new FieldError("rentalmanageDto", "expectedReturnOn", rentalError));
+                    }
+                }
             }
  
             if (result.hasErrors()) {
