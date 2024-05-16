@@ -74,7 +74,7 @@ public class RentalManageController {
    
     @GetMapping("/rental/add")
     public String add(Model model, @ModelAttribute RentalManageDto rentalManageDto) {
-        List <Stock> stockList = this.stockService.findAll();
+        List <Stock> stockList = this.stockService.findStockAvailableAll();
         List <Account> accounts = this.accountService.findAll();
  
         model.addAttribute("rentalStatus", RentalStatus.values());
