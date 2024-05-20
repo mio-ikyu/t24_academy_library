@@ -121,7 +121,7 @@ public class RentalManageController {
             // 登録処理
             this.rentalManageService.save(rentalManageDto);
 
-            return "redirect:/rental/add";
+            return "redirect:/rental/index";
         } catch (Exception e) {
             log.error(e.getMessage());
 
