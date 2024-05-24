@@ -1,6 +1,8 @@
 package jp.co.metateam.library.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,7 +39,7 @@ public class RentalManageDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "返却予定日は必須です")
-    private Date expectedReturnOn;
+    public Date expectedReturnOn;
 
     private Timestamp rentaledAt;
 
@@ -48,6 +50,8 @@ public class RentalManageDto {
     private Stock stock;
 
     private Account account;
+
+    public Date expectedRental;
 
     // 貸出可否チェック
     public Optional<String> isStatusError(Integer preStatus) {
@@ -64,4 +68,42 @@ public class RentalManageDto {
         }
         return Optional.empty();
     }
+
+    // ステータス変更時の日付チェック
+    public String isDateError(RentalManage rentalManage, RentalManageDto rentalManageDto) {
+        // 現在の日時
+        LocalDate nowDate = LocalDate.now(ZoneId.of("Asia/Tokyo"));
+
+        // preが既に登録されている内容・postが現在入力されている内容
+        Integer prestatus = rentalManage.getStatus();
+        Integer poststatus = rentalManageDto.getStatus();
+
+        // 貸出日と返却日をLocalDateに変換するためにインスタンス化させる
+        LocalDate expectedRentalOn = rentalManageDto.getExpectedRentalOn().toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        /*LocalDate expectedReturnOn = rentalManageDto.getExpectedReturnOn().toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDate();*/
+
+        // if文貸出待ち→貸出中
+        if (prestatus == 0 && poststatus == 1) {
+            if (!expectedRentalOn.equals(nowDate)) {
+                return "現在の日付を入力してください。";
+            }
+        }
+        /*if文貸出中→返却済み
+        if (prestatus == 1 && poststatus == 2) {
+            if (!expectedReturnOn.equals(nowDate)) {
+                return "現在の日付を入力してください。";
+            }
+        }*/
+        return null;
+    }
+
+    public String returnError(){
+        if(expectedReturnOn.before(expectedRentalOn)){
+        return "貸出日より前に設定してください";
+     }
+        return null;
+    } 
+
 }

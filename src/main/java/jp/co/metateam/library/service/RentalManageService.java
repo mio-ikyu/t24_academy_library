@@ -132,6 +132,7 @@ public class RentalManageService {
                 throw new Exception("Stock not found.");
             }
 
+            updateTargetRental = setRentalStatusDate(updateTargetRental,rentalManageDto.getStatus());
             updateTargetRental.setId(rentalManageDto.getId());
             updateTargetRental.setAccount(account);
             updateTargetRental.setExpectedRentalOn(rentalManageDto.getExpectedRentalOn());

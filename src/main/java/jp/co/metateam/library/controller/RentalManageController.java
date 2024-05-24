@@ -118,6 +118,12 @@ public class RentalManageController {
             if (result.hasErrors()) {
                 throw new Exception("Validation error.");
             }
+
+            String Error = rentalManageDto.returnError();
+            if (Error != null) {
+                result.addError(new FieldError("rentalManageDto", "expectedReturnOn", Error));
+                throw new RuntimeException(Error);
+            }
             // 登録処理
             this.rentalManageService.save(rentalManageDto);
 
@@ -199,12 +205,21 @@ public class RentalManageController {
                     }
                 }
             }
+            // 変更前の貸出情報を取得
+            RentalManage rentalManage = this.rentalManageService.findById(Long.valueOf(id));
+            // ステータス変更時の日付チェック
+            String DateError = rentalManageDto.isDateError(rentalManage, rentalManageDto);
+            if (DateError != null) {
+                result.addError(new FieldError("rentalmanageDto", "expectedRentalOn", DateError));
+                // result.addError(new FieldError("rentalManageDto","expectedReturnOn",
+                // DateError));
+                throw new RuntimeException(DateError);
+            }
 
             if (result.hasErrors()) {
                 throw new Exception("Validation error.");
             }
-            // 変更前の貸出情報を取得
-            RentalManage rentalManage = this.rentalManageService.findById(Long.valueOf(id));
+
             // 変更前と変更後の貸出ステータスを取得
             Optional<String> validErrorOptional = rentalManageDto.isStatusError(rentalManage.getStatus());
             // Optionalが空でない場合のみエラーを処理する
@@ -214,6 +229,13 @@ public class RentalManageController {
                     throw new RuntimeException(validError);
                 }
             });
+
+            // 返却予定日が貸出予定日より前の日付になっているかチェック
+            String Error = rentalManageDto.returnError();
+            if (Error != null) {
+                result.addError(new FieldError("rentalManageDto", "expectedReturnOn", Error));
+                throw new RuntimeException(Error);
+            }
 
             // 更新処理
             this.rentalManageService.update(Long.valueOf(id), rentalManageDto);
