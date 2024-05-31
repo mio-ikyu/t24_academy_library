@@ -21,7 +21,7 @@
                     </span>
                 </div>
                 <form id="rental_add_form" th:object="${rentalManageDto}" th:action="@{/rental/{id}/edit(id=*{id})}"
-                    method="post">
+                    method="post" novalidate>
                     <div class="mb30">
                         <label class="input_title" for="employeeId">社員番号<span class="text-red asterisk">＊</span></label>
                         <select id="employeeId" class="form_input" name="employeeId" required>
