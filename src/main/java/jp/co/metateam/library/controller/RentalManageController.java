@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import jakarta.validation.Valid;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import jp.co.metateam.library.constants.Constants;
 import jp.co.metateam.library.repository.RentalManageRepository;
 import java.util.Optional;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -73,16 +76,55 @@ public class RentalManageController {
     }
 
     @GetMapping("/rental/add")
-    public String add(Model model, @ModelAttribute RentalManageDto rentalManageDto) {
-        List<Stock> stockList = this.stockService.findStockAvailableAll();
-        List<Account> accounts = this.accountService.findAll();
+    public String add(Model model, @ModelAttribute RentalManageDto rentalManageDto,
+            @RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "month", required = false) Integer month,
+            @RequestParam(value = "day", required = false) Integer day,
+            @RequestParam(value = "title", required = false) Integer title) {
 
-        model.addAttribute("rentalStatus", RentalStatus.values());
-        model.addAttribute("stockList", stockList);
-        model.addAttribute("accounts", accounts);
+        // 社員の情報をすべて取得
+        List<Account> accounts = this.accountService.findAll();
+        // 総利用可能在庫数
+        List<Stock> stockList = this.stockService.findStockAvailableAll();
+
+        // 在庫カレンダーから貸出登録画面に遷移
+        if (year != null && month != null && day != null && title != null) {
+            LocalDate localDate = LocalDate.of(year, month, day);
+            java.sql.Date choiceDate = java.sql.Date.valueOf(localDate);
+            // 選択した日付とタイトルをリストに格納
+            List<Stock> availableStock = this.stockService.availableStockValues(choiceDate, title);
+            // 在庫カレンダーリストに関する情報をHTMLのstockListに表示される
+            model.addAttribute("stockList", availableStock);
+
+            // 貸出登録画面に遷移後の情報
+            rentalManageDto.setId(null);
+            rentalManageDto.setEmployeeId(null);
+            rentalManageDto.setExpectedRentalOn(null);
+            rentalManageDto.setExpectedReturnOn(null);
+            rentalManageDto.setStockId(null);
+            rentalManageDto.setStatus(null);
+            // 貸出予定日のみ表示
+            rentalManageDto.setExpectedRentalOn(choiceDate);
+
+            // 貸出予定日と在庫管理番号のプルダウン表示
+            model.addAttribute("rentalManageDto", rentalManageDto);
+            // 社員番号と貸出ステータスのプルダウン表示
+            model.addAttribute("accounts", accounts);
+            model.addAttribute("rentalStatus", RentalStatus.values());
+
+        } else {
+            // 社員番号と貸出ステータスのプルダウン表示
+            model.addAttribute("accounts", accounts);
+            model.addAttribute("rentalStatus", RentalStatus.values());
+            // 貸出予定日と在庫管理番号のプルダウン表示
+            model.addAttribute("stockList", stockList);
+
+        }
 
         if (!model.containsAttribute("rentalManageDto")) {
+
             model.addAttribute("rentalManageDto", new RentalManageDto());
+
         }
 
         return "rental/add";
