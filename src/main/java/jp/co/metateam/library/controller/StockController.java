@@ -1,6 +1,8 @@
 package jp.co.metateam.library.controller;
 
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +18,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import jp.co.metateam.library.model.BookMst;
+import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.model.Stock;
 import jp.co.metateam.library.model.StockDto;
 import jp.co.metateam.library.service.BookMstService;
 import jp.co.metateam.library.service.StockService;
 import jp.co.metateam.library.values.StockStatus;
 import lombok.extern.log4j.Log4j2;
-
+import jp.co.metateam.library.model.CalendarDto;
 /**
  * 在庫情報関連クラス
  */
@@ -132,26 +135,30 @@ public class StockController {
         }
     }
 
+    //カレンダーの作成
     @GetMapping("/stock/calendar")
-    public String calendar(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month, Model model) {
-
+    public String calendar(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month,
+            Model model) throws ParseException {
+ 
         LocalDate today = year == null || month == null ? LocalDate.now() : LocalDate.of(year, month, 1);
         Integer targetYear = year == null ? today.getYear() : year;
-        Integer targetMonth = today.getMonthValue();
-
+        Integer targetMonth = today.getMonthValue(); //なぜ年だけ選択出来て月は選択できないのか
+        LocalDate nowDate = LocalDate.now(ZoneId.of("Asia/Tokyo"));
+ 
         LocalDate startDate = LocalDate.of(targetYear, targetMonth, 1);
         Integer daysInMonth = startDate.lengthOfMonth();
-
+ 
         List<Object> daysOfWeek = this.stockService.generateDaysOfWeek(targetYear, targetMonth, startDate, daysInMonth);
-        List<String> stocks = this.stockService.generateValues(targetYear, targetMonth, daysInMonth);
-
+        List<CalendarDto> stocks = this.stockService.generateValues(targetYear, targetMonth, daysInMonth);
+ 
         model.addAttribute("targetYear", targetYear);
         model.addAttribute("targetMonth", targetMonth);
         model.addAttribute("daysOfWeek", daysOfWeek);
         model.addAttribute("daysInMonth", daysInMonth);
-
+        model.addAttribute("nowDate", nowDate);
+        //StockServiceの情報を呼び出す
         model.addAttribute("stocks", stocks);
-
+ 
         return "stock/calendar";
     }
 }

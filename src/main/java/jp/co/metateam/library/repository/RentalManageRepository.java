@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import jp.co.metateam.library.model.RentalManage;
+import jp.co.metateam.library.values.RentalStatus;
 
 @Repository
 public interface RentalManageRepository extends JpaRepository<RentalManage, Long> {
@@ -35,5 +36,14 @@ public interface RentalManageRepository extends JpaRepository<RentalManage, Long
             " WHERE rm.stock.id = ?1 AND rm.status IN (0, 1) " +
             " AND (rm.expectedRentalOn > ?2 AND rm.expectedReturnOn < ?3)")
     long countByIdAndStatusAndDateIn(String stockid, Date expectedReturnOn, Date expectedRentalOn);
+
+    //在庫カレンダーで使用
+    //貸出待ちの貸出情報(貸出ステータス・選択した日付・在庫管理番号)
+    @Query("SELECT COUNT (rm) FROM RentalManage rm WHERE rm.status = 0 AND (rm.expectedRentalOn <= ?1 AND rm.expectedReturnOn >= ?1) AND rm.stock.id IN ?2")
+    long scheduledRentaWaitData(Date day, List<String>stock_id);
+
+    //貸出中の貸出情報(貸出ステータス・選択した日付・在庫管理番号)
+    @Query("SELECT COUNT (rm) FROM RentalManage rm WHERE rm.status = 1 AND (rm.rentaledAt <= ?1 AND rm.expectedReturnOn >= ?1) AND rm.stock.id IN ?2")
+    long scheduledRentalingData(Date day, List<String>stock_id);
 
 }

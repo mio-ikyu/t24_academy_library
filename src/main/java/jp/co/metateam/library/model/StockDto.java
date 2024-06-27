@@ -34,4 +34,6 @@ public class StockDto {
 
     private List<RentalManage> rentalManages;
 
+    private String title;
+
 }
