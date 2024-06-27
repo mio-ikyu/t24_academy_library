@@ -1,10 +1,8 @@
 package jp.co.metateam.library.model;
-
-import java.security.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,44 +11,17 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-
 public class CalendarDto {
 
-    private Long id;
     private String title;
-    private long stockCount;
-    private BookMst bookMst;
-    private Date expectedRentalOn;
-    private Date expectedReturnOn;
 
-    /** Getters */
+    private Long bookId;
 
-    public Long getId() {
-        return id;
-    }
+    private String availableStockCount;
+ 
+    private List<StockByDayDto> stockCountByDay;
 
-    public Date getExpectedRentalOn() {
-        return expectedRentalOn;
-    }
-
-    public Date getExpectedReturnOn() {
-        return expectedReturnOn;
-    }
-
-
-    /** Setters */
-
- public void setId(Long id) {
-    this.id = id;
-}
-
-public void setExpectedRentalOn(Date expectedRentalOn) {
-    this.expectedRentalOn = expectedRentalOn;
-}
-
-public void setExpectedReturnOn(Date expectedReturnOn) {
-    this.expectedReturnOn = expectedReturnOn;
-}
+    private List<String> stockIdList;
 
     
 }

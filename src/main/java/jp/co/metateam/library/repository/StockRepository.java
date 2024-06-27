@@ -30,7 +30,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     //選択した日付が貸出予定日と返却予定日の期間が被っている在庫管理番号を取得
     @Query("SELECT DISTINCT st FROM Stock st LEFT OUTER JOIN RentalManage rm ON st.id = rm.stock.id WHERE ?1 BETWEEN rm.expectedRentalOn AND rm.expectedReturnOn AND st.bookMst.id = ?2 AND st.status = 0 AND deletedAt IS NULL")
-    List<Stock> lendableBook(Date choiceDate, Long id);
+    List<Stock> lendableBook(java.sql.Date choiceDate, Long id);
 
     //プルダウンに表示するための在庫管理番号
     @Query("SELECT st FROM Stock st WHERE st.status = 0 AND st.bookMst.id = ?1 AND st.deletedAt IS NULL")

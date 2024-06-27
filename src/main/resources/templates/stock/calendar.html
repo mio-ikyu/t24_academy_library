@@ -39,18 +39,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="stock, stat : ${stocks}">
+                            <tr th:each="stock : ${stocks}">
+                                <td th:text="${stock.title}"></td>
+                                <td th:text="${stock.availableStockCount}"></td>
+                                <td th:each="stockCount : ${stock.stockCountByDay}">
+                                    <a th:href="@{/rental/add(expectedRentalOn=${stockCount.expectedRentalOn},bookId=${stock.bookId})}" th:text="${stockCount.stockCount}" th:if="${stockCount.stockCount != '×'}"></a>
+                                    <span th:text="${stockCount.stockCount}" th:if="${stockCount.stockCount == '×'}"></span>
+                                </td>
+                            </tr>
+                            <!--tr th:each="stock, stat : ${stocks}">
                                 <th:block th:each="bookData, iterStat : ${stock}">
-                                    <!--iterStat.indexが2以上だから-1をして1日目とカウントする-->
-                                    <td
-                                        th:if="${iterStat.index >= 2 and #dates.format(#dates.create(targetYear, targetMonth, iterStat.index - 1), 'yyyy-MM-dd') >= #temporals.format(nowDate, 'yyyy-MM-dd') and bookData != '×'}"> <!--0,1は書籍名と総在庫数が入っていて日ごとが2からスタート-->
+                                    <td th:if="${iterStat.index >= 2 and #dates.format(#dates.create(targetYear, targetMonth, iterStat.index - 1), 'yyyy-MM-dd') >= #temporals.format(nowDate, 'yyyy-MM-dd') and bookData != '×'}"> 
                                         <a th:href="@{/rental/add(year=${targetYear}, month=${targetMonth}, day=${iterStat.index - 1}, title=${stat.index})}"
                                             th:text="${bookData}"></a>
                                     </td>
                                     <td th:unless="${iterStat.index >= 2 and #dates.format(#dates.create(targetYear, targetMonth, iterStat.index - 1), 'yyyy-MM-dd') >= #temporals.format(nowDate, 'yyyy-MM-dd') and bookData != '×'}"
                                         th:text="${bookData}"></td>
                                 </th:block>
-                            </tr>
+                            </tr-->                      
                         </tbody>
                     </table>
                 </div>
