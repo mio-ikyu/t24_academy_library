@@ -19,7 +19,7 @@ public class StockDto {
     @NotEmpty(message = "在庫管理番号は必須です")
     private String id;
 
-    @NotNull(message = "書籍名は必須です")
+   //@NotNull(message = "書籍名は必須です")
     private Long bookId;
 
     @NotNull(message = "在庫ステータスは必須です")
