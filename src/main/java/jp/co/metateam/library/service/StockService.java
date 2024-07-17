@@ -154,14 +154,13 @@ public class StockService {
             throws ParseException {
         List<CalendarDto> calendarList = new ArrayList<CalendarDto>();
 
-       // 検索機能
-       List<BookMst> bookData = new ArrayList<>();
-       if (searchTitle != null) {
-       bookData = bookSearch(searchTitle);
-       } else {
-       bookData = findAllBookData();
-       }
-
+        // 検索機能
+        List<BookMst> bookData = new ArrayList<>();
+        if (searchTitle != null) {
+            bookData = bookSearch(searchTitle);
+        } else {
+            bookData = findAllBookData();
+        }
 
         // 書籍分拡張ループ→順番に書籍名を呼び出して一つずつ内容を確認していく
         for (BookMst bookLoop : bookData) {
@@ -218,7 +217,6 @@ public class StockService {
                 stockByDayDto.setStockCount(totalValue);
                 stockCountByDay.add(stockByDayDto);
 
-
             }
             calendarValue.setStockCountByDay(stockCountByDay);
             calendarList.add(calendarValue);
@@ -227,10 +225,9 @@ public class StockService {
         return calendarList;
     }
 
-    
     // 遷移後
     public List<Stock> availableStockValues(java.sql.Date choiceDate, Long bookId) {
-        
+
         // 選択された日付とその在庫管理番号のリスト
         List<Stock> availableList = lendableBook(choiceDate, bookId);
         // 在庫管理番号によって総利用可能在庫数をまとめたリスト

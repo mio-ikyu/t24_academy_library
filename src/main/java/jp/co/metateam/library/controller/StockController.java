@@ -150,7 +150,7 @@ public class StockController {
         List<Object> daysOfWeek = this.stockService.generateDaysOfWeek(targetYear, targetMonth, startDate, daysInMonth);
         List<CalendarDto> stocks = this.stockService.generateValues(targetYear, targetMonth, daysInMonth, searchTitle);
         //検索件数表示
-        String bookTotal = String.valueOf(stocks.size());
+        Integer bookTotal = stocks.size();
         
  
         model.addAttribute("targetYear", targetYear);
