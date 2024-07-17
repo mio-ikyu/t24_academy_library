@@ -3,6 +3,7 @@
     justify-content: end;
     margin-bottom: 30px;
     text-align: right;
+    font-family:"BIZ UDPGothic";
 }
 .add_btn a {
     display: flex;
@@ -20,11 +21,13 @@
     margin-right: 10px;
     position: relative;
     top: 3px;
+    font-family:"BIZ UDPGothic";
 }
 #stock_table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
+    font-family:"BIZ UDPGothic";
 }
 
 #stock_table tr th,
@@ -39,12 +42,15 @@
 
 #stock_table tr th:nth-of-type(1) {
     width: 160px;
+    font-family:"BIZ UDPGothic";
 }
 #stock_table tr th:nth-of-type(2) {
     min-width: 250px;
+    font-family:"BIZ UDPGothic";
 }
 #stock_table tr th:nth-of-type(3) {
     width: 130px;
+    font-family:"BIZ UDPGothic";
 }
 
 #stock_table .stock_item_menu {
@@ -52,4 +58,5 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    font-family:"BIZ UDPGothic";
 }

@@ -2,6 +2,7 @@ label {
     display: block;
     font-size: 20px;
     margin-bottom: 10px;
+    font-family:"BIZ UDPGothic";
 }
 
 #stock_edit_form .form_input {
@@ -11,6 +12,7 @@ label {
     border: 2px solid #D9D9D9;
     padding: 2px 10px;
     font-size: 20px;
+    font-family:"BIZ UDPGothic";
 }
 
 #stock_edit_form .btn_block {

@@ -134,6 +134,7 @@ footer {
     padding-bottom: 15px;
     border-bottom: 1px solid #8B8D8F;
     margin-bottom: 30px;
+    font-family:"BIZ UDPGothic";
 }
 
 .error_msg {
@@ -180,6 +181,7 @@ footer {
     border-radius: 0.5rem;
     text-decoration: none;
     padding: 10px 5px;
+    font-family:"BIZ UDPGothic";
 }
 
 .meta-operation-btn img {
@@ -212,6 +214,7 @@ label.account {
     user-select: none;
     font-size: 20px;
     text-align: center;
+    font-family:"BIZ UDPGothic";
 }
 
 label.account .user_icon {
@@ -295,6 +298,7 @@ input[type="checkbox"].on-off:checked+.menu {
     text-align: center;
     color: #373737;
     background-color: transparent;
+    font-family:"BIZ UDPGothic";
 }
 
 .submit_btn:hover {
