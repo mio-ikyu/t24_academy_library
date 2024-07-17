@@ -2,6 +2,7 @@ label.input_title {
     display: block;
     font-size: 20px;
     margin-bottom: 10px;
+    font-family:"BIZ UDPGothic";
 }
 
 #rental_edit_form .form_input {
@@ -11,6 +12,7 @@ label.input_title {
     border: 2px solid #D9D9D9;
     padding: 2px 10px;
     font-size: 20px;
+    font-family:"BIZ UDPGothic";
 }
 
 #rental_edit_form .btn_block {
@@ -26,4 +28,5 @@ label.input_title {
     color: #545454;
     border-radius: 0.5rem;
     border: none;
+    font-family:"BIZ UDPGothic";
 }

@@ -1,14 +1,12 @@
 package jp.co.metateam.library.service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +16,11 @@ import jp.co.metateam.library.constants.Constants;
 import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.Stock;
 import jp.co.metateam.library.model.StockByDayDto;
-import jp.co.metateam.library.model.RentalManage;
 import jp.co.metateam.library.model.StockDto;
 import jp.co.metateam.library.repository.BookMstRepository;
 import jp.co.metateam.library.repository.StockRepository;
-import jp.co.metateam.library.values.RentalStatus;
 import jp.co.metateam.library.repository.RentalManageRepository;
 import jp.co.metateam.library.model.CalendarDto;
-import java.util.Arrays;
 import java.util.Date;
 
 @Service
@@ -194,8 +189,7 @@ public class StockService {
 
                 // 対象の日付を取得
                 LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-                //String localDateStr = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                //Date expectedRentalOn = new SimpleDateFormat("yyyy-MM-dd").parse(localDateStr);
+
                 // LocalDate型をDate型に変換する（Date型は時刻も含める）
                 Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 //calendarValue.setExpectedRentalOn(expectedRentalOn);
@@ -216,73 +210,10 @@ public class StockService {
         }
       return calendarList;
     }
-   /* // 在庫カレンダーの値を表示
-    public List<List<String>> generateValue(Integer year, Integer month, Integer daysInMonth) {
-        // Controllerに渡す用の空のリストを作成
-        List<List<String>> bigValues = new ArrayList<>();
-        // BookMstのSQLを呼び出す（総利用可能在庫数）
-        List<BookMst> bookData = this.bookMstRepository.findAllBookData();
-
-        // 書籍分拡張ループ→順番に書籍名を呼び出して一つずつ内容を確認していく
-        for (BookMst bookLoop : bookData) {
-            // 書籍名と総利用可能在庫数と日付分ループで取得した日ごとの利用可能在庫数を格納するリストを作成
-            List<String> values = new ArrayList<>();
-            // 書籍ループで取得したタイトルをリストに格納
-            values.add(bookLoop.getTitle());
-
-            // StockのSQLを呼び出す(総利用可能在庫数)
-            List<Stock> availableList = this.stockRepository.findAllAvailableStockData(bookLoop.getId());
-            // Long型をString型に変換する
-            String availableStockCount = String.valueOf(availableList.size());
-            values.add(availableStockCount);
-
-            // カウントして取得した在庫数をリストに格納
-            List<String> stockIdList = new ArrayList<>();
-            // 在庫数をカウントするためのループ
-            for (Stock stock : availableList) {
-                stockIdList.add(stock.getId());
-            }
-
-            // 現在日付の取得
-            LocalDate today = LocalDate.now();
-
-            // 日付分ループ
-            for (int dayOfMonth = 1; dayOfMonth <= daysInMonth; dayOfMonth++) {
-               
-                //日付の作成
-                LocalDate currentDateOfMonth = LocalDate.of(year, month, dayOfMonth);
-                // 過去日だった場合×を表示
-                if (today != null && currentDateOfMonth.isBefore(today)) {
-                    values.add("×");
-                    continue; // 次の日付へ
-                }
-
-                // 対象の日付を取得
-                LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-                // LocalDate型をDate型に変換する（Date型は時刻も含める）
-                Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-                // 日ごとの利用可能在庫数を定義する
-                Long scheduledRentaWaitDataCount = scheduledRentaWaitData(date, stockIdList);
-                Long scheduledRentalingDataCount = scheduledRentalingData(date, stockIdList);
-
-                // 総利用在庫数から貸出待ちと貸出予定日を引く
-                Long total = availableList.size() - (scheduledRentaWaitDataCount + scheduledRentalingDataCount);
-                // 計算してtotalに入れたデータをString型のtotalValueに変換するかつ結果が0以下だった場合×にする
-                String totalValue = (total <= 0) ? "×" :Long.toString(total);
-                values.add(totalValue);
-           
-            }
-            bigValues.add(values);
-        }
-        return bigValues;
-    }*/
+   
 
     // 遷移後
     public List<Stock> availableStockValues(java.sql.Date choiceDate,  Long bookId) {
-
-        // 書籍IDをカウント(DBが0からスタートのため+1でカウント)
-        //Long id = Long.valueOf(title + 1);
 
         // 選択された日付とその在庫管理番号のリスト
         List<Stock> availableList = lendableBook(choiceDate, bookId);
