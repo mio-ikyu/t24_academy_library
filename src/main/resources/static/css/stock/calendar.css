@@ -2,36 +2,49 @@
     width: 300px;
     display: flex;
     justify-content: space-between;
+    font-family:"BIZ UDPGothic";
 }
 
 .table_wrapper {
     width: 100%;
     max-width: 1200px;
     overflow: scroll;
+    font-family:"BIZ UDPGothic";
 }
+
 #calendar_table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
     overflow: scroll;
+    font-family:"BIZ UDPGothic";
 }
 
 #calendar_table tr th,
 #calendar_table tr td {
-    border: 1px solid #B9B9B9;
+    border: 1px solid #3f85ed;
     padding: 10px;
+
 }
 
 #calendar_table tr th {
-    background-color: #E1E1E2;
+    background-color: #9ad1ea;
     width: 100%;
 }
 
 #calendar_table tr th.header_days {
     text-align: left;
+    font-family:"BIZ UDPGothic";
 }
 
 #calendar_table tr.days th {
     padding: 5px;
     font-size: 14px;
+    font-family:"BIZ UDPGothic";
+}
+
+.search_box{
+    display: inline-block; 
+    margin-left: 50px;
+    font-family:"BIZ UDPGothic";
 }
