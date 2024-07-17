@@ -38,6 +38,7 @@ public class BookMst {
     @OneToMany(mappedBy = "bookMst", cascade = CascadeType.ALL)
     public List<Stock> stock;
 
+
     /** Getters */
 
     public Long getId() {

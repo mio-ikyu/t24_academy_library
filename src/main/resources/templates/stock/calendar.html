@@ -13,7 +13,13 @@
         <div class="main_contents">
             <div th:replace="~{common :: header}"></div>
             <div class="inner_contens">
-                <div class="page_title">在庫カレンダー</div>
+                <div class="page_title">在庫カレンダー
+                    <form  class="search_box" action="/mt_library/stock/calendar" method="get" >
+                        <input type="text" name="searchTitle" style="width: 200px; padding: 10px;" value="" placeholder="書籍検索">
+                        <input type="submit" value="検索">
+                    </form>
+                    <div class="search_box" th:text="${bookTotal + '件'}"></div>
+                </div>
                 <div class="month_change mb30">
                     <div><a th:href="@{/stock/calendar(year=2024,month=*{targetMonth-1})}">前月</a></div>
                     <div th:text="${targetYear + '年' + targetMonth + '月'}"></div>
@@ -46,7 +52,7 @@
                                     <a th:href="@{/rental/add(expectedRentalOn=${stockCount.expectedRentalOn},bookId=${stock.bookId})}" th:text="${stockCount.stockCount}" th:if="${stockCount.stockCount != '×'}"></a>
                                     <span th:text="${stockCount.stockCount}" th:if="${stockCount.stockCount == '×'}"></span>
                                 </td>
-                            </tr>                 
+                            </tr>         
                         </tbody>
                     </table>
                 </div>

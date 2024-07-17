@@ -88,6 +88,11 @@ public class StockService {
     }
 
     @Transactional
+    public List<BookMst> bookSearch(String searchTitle) {
+        return this.bookMstRepository.bookSearch(searchTitle);
+    }
+
+    @Transactional
     public void save(StockDto stockDto) throws Exception {
         try {
             Stock stock = new Stock();
@@ -144,10 +149,19 @@ public class StockService {
 
         return daysOfWeek;
     }
-    public List<CalendarDto> generateValues(Integer year, Integer month, Integer daysInMonth) throws ParseException {
-      List<CalendarDto> calendarList = new ArrayList<CalendarDto>();
-       // BookMstのSQLを呼び出す（総利用可能在庫数）
-       List<BookMst> bookData = this.bookMstRepository.findAllBookData();
+
+    public List<CalendarDto> generateValues(Integer year, Integer month, Integer daysInMonth, String searchTitle)
+            throws ParseException {
+        List<CalendarDto> calendarList = new ArrayList<CalendarDto>();
+
+        // 検索機能
+        List<BookMst> bookData = new ArrayList<>();
+        if (searchTitle != null) {
+            bookData = bookSearch(searchTitle);
+        } else {
+            bookData = findAllBookData();
+        }
+
         // 書籍分拡張ループ→順番に書籍名を呼び出して一つずつ内容を確認していく
         for (BookMst bookLoop : bookData) {
             // 書籍名と総利用可能在庫数と日付分ループで取得した日ごとの利用可能在庫数を格納するリストを作成
@@ -177,7 +191,7 @@ public class StockService {
             // 日付分ループ
             for (int dayOfMonth = 1; dayOfMonth <= daysInMonth; dayOfMonth++) {
                 StockByDayDto stockByDayDto = new StockByDayDto();
-                //日付の作成
+                // 日付の作成
                 LocalDate currentDateOfMonth = LocalDate.of(year, month, dayOfMonth);
                 stockByDayDto.setExpectedRentalOn(currentDateOfMonth);
                 // 過去日だった場合×を表示
@@ -192,7 +206,6 @@ public class StockService {
 
                 // LocalDate型をDate型に変換する（Date型は時刻も含める）
                 Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                //calendarValue.setExpectedRentalOn(expectedRentalOn);
                 // 日ごとの利用可能在庫数を定義する
                 Long scheduledRentaWaitDataCount = scheduledRentaWaitData(date, stockIdList);
                 Long scheduledRentalingDataCount = scheduledRentalingData(date, stockIdList);
@@ -200,20 +213,20 @@ public class StockService {
                 // 総利用在庫数から貸出待ちと貸出予定日を引く
                 Long total = availableList.size() - (scheduledRentaWaitDataCount + scheduledRentalingDataCount);
                 // 計算してtotalに入れたデータをString型のtotalValueに変換するかつ結果が0以下だった場合×にする
-                String totalValue = (total <= 0) ? "×" :Long.toString(total);
+                String totalValue = (total <= 0) ? "×" : Long.toString(total);
                 stockByDayDto.setStockCount(totalValue);
                 stockCountByDay.add(stockByDayDto);
-           
+
             }
             calendarValue.setStockCountByDay(stockCountByDay);
             calendarList.add(calendarValue);
+
         }
-      return calendarList;
+        return calendarList;
     }
-   
 
     // 遷移後
-    public List<Stock> availableStockValues(java.sql.Date choiceDate,  Long bookId) {
+    public List<Stock> availableStockValues(java.sql.Date choiceDate, Long bookId) {
 
         // 選択された日付とその在庫管理番号のリスト
         List<Stock> availableList = lendableBook(choiceDate, bookId);

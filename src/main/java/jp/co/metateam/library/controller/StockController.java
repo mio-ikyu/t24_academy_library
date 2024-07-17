@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import jp.co.metateam.library.model.BookMst;
-import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.model.Stock;
 import jp.co.metateam.library.model.StockDto;
 import jp.co.metateam.library.service.BookMstService;
@@ -138,8 +137,8 @@ public class StockController {
     //カレンダーの作成
     @GetMapping("/stock/calendar")
     public String calendar(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month,
-            Model model) throws ParseException {
- 
+            @RequestParam(required = false)String searchTitle, Model model) throws ParseException {
+                 
         LocalDate today = year == null || month == null ? LocalDate.now() : LocalDate.of(year, month, 1);
         Integer targetYear = year == null ? today.getYear() : year;
         Integer targetMonth = today.getMonthValue(); //なぜ年だけ選択出来て月は選択できないのか
@@ -149,7 +148,10 @@ public class StockController {
         Integer daysInMonth = startDate.lengthOfMonth();
  
         List<Object> daysOfWeek = this.stockService.generateDaysOfWeek(targetYear, targetMonth, startDate, daysInMonth);
-        List<CalendarDto> stocks = this.stockService.generateValues(targetYear, targetMonth, daysInMonth);
+        List<CalendarDto> stocks = this.stockService.generateValues(targetYear, targetMonth, daysInMonth, searchTitle);
+        //検索件数表示
+        Integer bookTotal = stocks.size();
+        
  
         model.addAttribute("targetYear", targetYear);
         model.addAttribute("targetMonth", targetMonth);
@@ -158,6 +160,8 @@ public class StockController {
         model.addAttribute("nowDate", nowDate);
         //StockServiceの情報を呼び出す
         model.addAttribute("stocks", stocks);
+        //表示内容をHTMLに送る
+        model.addAttribute("bookTotal", bookTotal);
  
         return "stock/calendar";
     }
