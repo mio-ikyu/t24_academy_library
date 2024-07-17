@@ -192,7 +192,7 @@ public class StockService {
             // 日付分ループ
             for (int dayOfMonth = 1; dayOfMonth <= daysInMonth; dayOfMonth++) {
                 StockByDayDto stockByDayDto = new StockByDayDto();
-                //日付の作成
+                // 日付の作成
                 LocalDate currentDateOfMonth = LocalDate.of(year, month, dayOfMonth);
                 stockByDayDto.setExpectedRentalOn(currentDateOfMonth);
                 // 過去日だった場合×を表示
@@ -214,13 +214,15 @@ public class StockService {
                 // 総利用在庫数から貸出待ちと貸出予定日を引く
                 Long total = availableList.size() - (scheduledRentaWaitDataCount + scheduledRentalingDataCount);
                 // 計算してtotalに入れたデータをString型のtotalValueに変換するかつ結果が0以下だった場合×にする
-                String totalValue = (total <= 0) ? "×" :Long.toString(total);
+                String totalValue = (total <= 0) ? "×" : Long.toString(total);
                 stockByDayDto.setStockCount(totalValue);
                 stockCountByDay.add(stockByDayDto);
+
 
             }
             calendarValue.setStockCountByDay(stockCountByDay);
             calendarList.add(calendarValue);
+
         }
         return calendarList;
     }
