@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import jakarta.validation.Valid;
@@ -28,7 +29,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import jp.co.metateam.library.constants.Constants;
 import jp.co.metateam.library.repository.RentalManageRepository;
 import java.util.Optional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+
 
 /**
  * 貸出管理関連クラスß
@@ -73,17 +80,51 @@ public class RentalManageController {
     }
 
     @GetMapping("/rental/add")
-    public String add(Model model, @ModelAttribute RentalManageDto rentalManageDto) {
-        List<Stock> stockList = this.stockService.findStockAvailableAll();
+    public String add(Model model, @ModelAttribute RentalManageDto rentalManageDto,
+            @RequestParam(value = "expectedRentalOn", required = false) LocalDate expectedRentalOn,
+            @RequestParam(value = "bookId", required = false) Long bookId) {
+           // String rentalOn = expectedRentalOn.toString();
+             // 社員の情報をすべて取得
         List<Account> accounts = this.accountService.findAll();
 
-        model.addAttribute("rentalStatus", RentalStatus.values());
-        model.addAttribute("stockList", stockList);
-        model.addAttribute("accounts", accounts);
+        // 在庫カレンダーから貸出登録画面に遷移
+        if ( expectedRentalOn != null && bookId != null) {
+            //LocalDate localDate = LocalDate.of(year, month, day);
+           java.sql.Date choiceDate = java.sql.Date.valueOf(expectedRentalOn);
+            // 選択した日付とタイトルをリストに格納
+            List<Stock> availableStock = this.stockService.availableStockValues(choiceDate, bookId);
+            // 在庫カレンダーリストに関する情報をHTMLのstockListに表示される
+            model.addAttribute("stockList", availableStock);
 
-        if (!model.containsAttribute("rentalManageDto")) {
-            model.addAttribute("rentalManageDto", new RentalManageDto());
+            // 貸出登録画面に遷移後の情報
+            rentalManageDto.setId(null);
+            rentalManageDto.setEmployeeId(null);
+            rentalManageDto.setExpectedRentalOn(choiceDate);
+            rentalManageDto.setExpectedReturnOn(null);
+            rentalManageDto.setStockId(null);
+            rentalManageDto.setStatus(null);
+            // 貸出予定日のみ表示
+            //rentalManageDto.setExpectedRentalOn(rentalOn);
+
+            // 貸出予定日と在庫管理番号のプルダウン表示
+            model.addAttribute("rentalManageDto", rentalManageDto);
+            
+        } else {
+        // 総利用可能在庫数
+        List<Stock> stockList = this.stockService.findStockAvailableAll();
+
+            // 貸出予定日と在庫管理番号のプルダウン表示
+            model.addAttribute("stockList", stockList);
+            if (!model.containsAttribute("rentalManageDto")) {
+
+                model.addAttribute("rentalManageDto", new RentalManageDto());
+    
+            }    
+
         }
+        // 社員番号と貸出ステータスのプルダウン表示
+        model.addAttribute("accounts", accounts);
+        model.addAttribute("rentalStatus", RentalStatus.values());
 
         return "rental/add";
     }
@@ -101,13 +142,13 @@ public class RentalManageController {
 
             // 上の内容をif文に通す
             if (rentalManageDto.getStatus() == 0 || rentalManageDto.getStatus() == 1) {
-                if (!(rentalSum == 0)) {
+                if (rentalSum > 0) {
                     Date expectedRentalOn = rentalManageDto.getExpectedRentalOn();
                     Date expectedReturnOn = rentalManageDto.getExpectedReturnOn();
                     Long rentalNum = this.rentalManageService.countByIdAndStatusAndDateIn(stockid, expectedRentalOn,
                             expectedReturnOn);
 
-                    if (!(rentalSum == rentalNum)) {
+                    if (rentalSum > rentalNum) {
                         String rentalError = "貸出できません。";
                         result.addError(new FieldError("rentalmanageDto", "expectedRentalOn", rentalError));
                         result.addError(new FieldError("rentalmanageDto", "expectedReturnOn", rentalError));

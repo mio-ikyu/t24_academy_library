@@ -40,7 +40,7 @@
                         <div class="error_msg" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
                     </div>
                     <div class="mb30">
-                        <label for="bookSelector">在庫ステータス<span class="text-red asterisk">＊</span></label>
+                        <label for="bookSelector">在庫ステータス<span class="text-red asterisk"></span></label>
                         <select id="bookSelector" class="form_input" name="status" required>
                             <option value="">ステータスを選択</option>
                             <option th:each="status : ${stockStatus}" th:value="${status.value}"
