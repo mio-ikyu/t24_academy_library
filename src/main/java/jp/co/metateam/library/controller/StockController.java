@@ -160,6 +160,7 @@ public class StockController {
         model.addAttribute("nowDate", nowDate);
         //StockServiceの情報を呼び出す
         model.addAttribute("stocks", stocks);
+        model.addAttribute("searchTitle", searchTitle);
         //表示内容をHTMLに送る
         model.addAttribute("bookTotal", bookTotal);
  

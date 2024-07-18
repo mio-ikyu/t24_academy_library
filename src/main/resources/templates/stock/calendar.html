@@ -15,7 +15,7 @@
             <div class="inner_contens">
                 <div class="page_title">在庫カレンダー
                     <form  class="search_box" action="/mt_library/stock/calendar" method="get" >
-                        <input type="text" name="searchTitle" style="width: 200px; padding: 10px;" value="" placeholder="書籍検索">
+                        <input type="text" name="searchTitle" style="width: 200px; padding: 10px;" th:value="${searchTitle}" placeholder="書籍検索">
                         <input type="submit" value="検索">
                     </form>
                     <div class="search_box" th:text="${bookTotal + '件'}"></div>
